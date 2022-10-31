@@ -1,20 +1,21 @@
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
+let dotenv = require('dotenv').config();
 
 
 const rootLevelMware = (req, res, next) => {
-  const {method, path, ip} = req;
+  const { method, path, ip } = req;
   console.log(`${method} ${path} - ${ip}`)
   next();
 }
 
 app.use(
-  rootLevelMware, 
-  bodyParser.urlencoded({extended: false})
+  rootLevelMware,
+  bodyParser.urlencoded({ extended: false })
 )
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
   const absolutePath = `${__dirname}/views/index.html`;
   res.sendFile(absolutePath);
   const staticServe = `${__dirname}/public`
@@ -23,17 +24,17 @@ app.get('/', (req,res) => {
 
 
 app.get('/json', (req, res) => {
-  const {MESSAGE_STYLE: style} = process.env;
-  
+  const { MESSAGE_STYLE: style } = process.env;
+
   const mes = 'Hello json';
   const message = {
-    'message': style === 'uppercase'? mes.toUpperCase() : mes,
+    'message': style === 'uppercase' ? mes.toUpperCase() : mes,
   }
-  
+
   res.json(message)
 })
 
-app.get('/now',(req, res, next) => {
+app.get('/now', (req, res, next) => {
   req.time = new Date().toString();
   next()
 }, (req, res) => {
@@ -43,28 +44,28 @@ app.get('/now',(req, res, next) => {
   res.send(response)
 })
 
-app.get('/:word/echo',(req, res) => {
-  const {word} = req.params;
+app.get('/:word/echo', (req, res) => {
+  const { word } = req.params;
   res.send({
     echo: word
   })
 })
 
 app.route('/name')
-.get((req,res) => {
-  const {first, last} = req.query;
-  const doc = {
-    name: `${first} ${last}`
-  }
-  res.send(doc)
-})
-.post((req,res) => {
-  const {first, last} = req.body;
-  const doc = {
-    name: `${first} ${last}`
-  }
-  res.send(doc)
-})
+  .get((req, res) => {
+    const { first, last } = req.query;
+    const doc = {
+      name: `${first} ${last}`
+    }
+    res.send(doc)
+  })
+  .post((req, res) => {
+    const { first, last } = req.body;
+    const doc = {
+      name: `${first} ${last}`
+    }
+    res.send(doc)
+  })
 
 
 
